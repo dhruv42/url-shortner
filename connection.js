@@ -1,3 +1,7 @@
+/*
+* Currently not being used.
+*/
+
 const { MongoClient } = require('mongodb');
 
 const connect = async () => {

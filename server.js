@@ -9,6 +9,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.locals.counter = 100;
 
+// require('./connection').connect();
+
 MongoClient.connect(process.env.DATABASE_URL, { useUnifiedTopology: true })
     .then(client => {
         app.locals.db = client.db(process.env.DB_NAME);
@@ -16,13 +18,15 @@ MongoClient.connect(process.env.DATABASE_URL, { useUnifiedTopology: true })
     })
     .catch(error => {
         console.log(error);
-        throw new Error(error.message);
+        app.use('/',()=>{
+            throw new Error('Something went wrong !');
+        })
+    }).finally(()=>{
+        app.listen(PORT, () => {
+            console.log(`-------------------------- Server listening on port - ${PORT} ----------------------`);
+        })
+        app.use('/', routes);
     })
 
-app.listen(PORT, () => {
-    console.log(`-------------------------- Server listening on port - ${PORT} ----------------------`);
-})
-
-app.use('/', routes);
 
 module.exports = app
