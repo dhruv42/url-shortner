@@ -1,0 +1,24 @@
+{
+    "messages": {
+		"BAD_REQUEST": "Bad Request",
+		"VALIDATION_ERROR": "Validation Error",
+		"EVERYTHING_LOOKS_GOOD": "Everything looks good",
+		"SOMETHING_WENT_WRONG": "Oops!! Something went wrong.",
+		"SUCCESS": "Success",
+		"RULES_NOT_FOUND": "Rules Not Found",
+		"CONFIG_FOUND": "Config already Exists !",
+		"MEMBER_NOT_FOUND": "Member Not Found",
+		"NOT_ELIGIBLE": "Not Eligible",
+		"CREDITED_SUCCESSFULLY": "Credited Successfully"
+	},
+	"statusCode": {
+        "OK": 200,
+        "PERMANENT_REDIRECT":301,
+		"BAD_REQUEST": 400,
+		"FORBIDDEN": 403,
+		"NOT_FOUND": 404,
+		"VALIDATION": 422,
+		"INTERNAL_SERVER": 500,
+		"NOT_IMPLEMENTED": 501
+	}
+}
