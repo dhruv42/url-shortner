@@ -11,7 +11,7 @@ app.locals.counter = 100;
 
 // require('./connection').connect();
 
-MongoClient.connect(process.env.DATABASE_URL, { useUnifiedTopology: true })
+MongoClient.connect(process.env.DB, { useUnifiedTopology: true })
     .then(client => {
         app.locals.db = client.db(process.env.DB_NAME);
         console.log("************************** DB connected successfully ****************************");
