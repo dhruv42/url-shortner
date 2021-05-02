@@ -1,29 +1,27 @@
 const encodeDecode = require('../helper/encode-decode');
 const handleResponse = require('../helper/handleResponse');
 const constants = require('../constants.json');
+const dbConn = require('../connection');
+
 
 const create = async (req, res) => {
     try {
-        const { db, counter } = req.app.locals;
-        console.log(counter);
-
-        const result = await db.collection('links').findOneAndUpdate(
-            { destination: req.body.destination },
-            {
-                $setOnInsert: {
-                    index: counter,
-                    destination: req.body.destination,
-                    slug: encodeDecode.base62Encode(counter)
-                }
-            }, { upsert: true, returnOriginal: false }
-        );
-        if (!result.lastErrorObject.updatedExisting) req.app.locals.counter++
-        res.status(constants.statusCode.OK)
-            .send(handleResponse.success(
-                constants.statusCode.OK,
-                constants.messages.SUCCESS,
-                {data:result.value}
-            ));
+        const { mongo,redisClient } = dbConn;
+        const { destination } = req.body;
+        let [counter,result] = await Promise.all([
+            redisClient.get("currKey"),
+            mongo.collection('links').find({destination}).toArray()
+        ])
+        if(result.length){
+            return res.status(400).send({message:'Duplicate link'});
+        }
+        result = await mongo.collection('links').insertOne({
+            destination,
+            slug:encodeDecode.base62Encode(counter),
+            index:counter
+        })
+        redisClient.incr("currKey");
+        return res.status(200).send(result.ops[0]);
 
     } catch (error) {
         console.log(error.message);

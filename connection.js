@@ -1,21 +1,27 @@
-/*
-* Currently not being used.
-*/
-
 const { MongoClient } = require('mongodb');
+const redis = require('async-redis');
 
-const connect = async () => {
-    try {
-        const dbConnection = new MongoClient(process.env.DATABASE_URL, { useUnifiedTopology: true })
-        await dbConnection.connect();
-        app.locals.db = dbConnection.db(process.env.DB_NAME);
-        console.log("**************** DB connected successfully ****************");
-    } catch (error) {
-        console.log(error);
-        throw new Error('Can not connect the database');
+class Database{
+    constructor(){
+        this.mongoClient = new MongoClient(process.env.DB,{useUnifiedTopology:true});
+        this.redisClient = null;
+        this.mongoInit();
+        this.redisInit();
+    }
+    async mongoInit(){
+        await this.mongoClient.connect();
+        this.mongo = this.mongoClient.db(process.env.DB_NAME);
+        console.log("===== mongo connected =====");
+    }
+
+    async redisInit(){
+        this.redisClient = redis.createClient({
+            host:process.env.REDIS_HOST,
+            port:process.env.REDIS_PORT,
+            password:process.env.REDIS_PASSWORD
+        });
+        console.log("===== redis connected =====");
     }
 }
 
-module.exports = {
-    connect
-}
+module.exports = new Database();
