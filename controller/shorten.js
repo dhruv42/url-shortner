@@ -32,8 +32,8 @@ const create = async (req, res) => {
 
 const redirect = async (req, res) => {
     try {
-        const { db } = req.app.locals;
-        const result = await db.collection('links').findOne({
+        const { mongo } = dbConn;
+        const result = await mongo.collection('links').findOne({
             slug:req.query.slug
         })
         if(!result) {
@@ -45,7 +45,8 @@ const redirect = async (req, res) => {
         }
 
         console.log(`redirecting to --> ${result.destination}`)
-        return res.status(constants.statusCode.PERMANENT_REDIRECT).redirect(result.destination);
+
+        return res.redirect(result.destination);
 
         
     } catch (error) {
